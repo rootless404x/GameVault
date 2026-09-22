@@ -8,9 +8,9 @@ namespace GameVault.Controllers
 {
     public class ProductosController : Controller
     {
-        private readonly TiendaContext _context;
+        private readonly TiendaDbContext _context;
 
-        public ProductosController(TiendaContext context)
+        public ProductosController(TiendaDbContext context)
         {
             _context = context;
         }

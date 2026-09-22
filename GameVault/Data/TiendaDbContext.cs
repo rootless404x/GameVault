@@ -5,9 +5,9 @@ using GameVault.Models;
 
 namespace GameVault.Data
 {
-    public class TiendaContext : DbContext
+    public class TiendaDbContext : DbContext
     {
-        public TiendaContext(DbContextOptions<TiendaContext> options) : base(options)
+        public TiendaDbContext(DbContextOptions<TiendaDbContext> options) : base(options)
         {
         }
 
