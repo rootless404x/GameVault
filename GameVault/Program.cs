@@ -1,8 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using GameVault.Data;
-
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configurar Serilog para guardar los logs en un archivo de texto en la carpeta /Logs/
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/gamevault-.txt", rollingInterval: RollingInterval.Day) // Crea un archivo diario (ej. gamevault-20260923.txt)
+    .CreateLogger();
+
+// Decirle a ASP.NET Core que use Serilog como su sistema de logs principal
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
