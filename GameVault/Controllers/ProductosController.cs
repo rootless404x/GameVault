@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GameVault.Data;
+﻿using GameVault.Data;
 using GameVault.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace GameVault.Controllers
@@ -15,89 +16,175 @@ namespace GameVault.Controllers
             _context = context;
         }
 
-        //READ
+        // READ - listar productos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Productos.ToListAsync());
+            var productos = await _context.Productos
+                .FromSqlRaw("EXEC spListarProductos")
+                .ToListAsync();
+
+            return View(productos);
         }
 
-        //CREATE
+
+        // CREATE - mostrar formulario
         public IActionResult Create()
         {
             return View();
         }
 
-        //CREATE - guardar
+
+        // CREATE - guardar producto
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Precio,Categoria,Descripcion,Imagen")] Producto producto)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Nombre,Precio,Stock,Categoria,Descripcion,Imagen")] Producto producto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(producto);
-                await _context.SaveChangesAsync();
+                var parameters = new[]
+                {
+                    new SqlParameter("@Nombre",
+                        producto.Nombre ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Precio",
+                        producto.Precio),
+
+                    new SqlParameter("@Stock",
+                        producto.Stock),
+
+                    new SqlParameter("@Categoria",
+                        producto.Categoria ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Descripcion",
+                        producto.Descripcion ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Imagen",
+                        producto.Imagen ?? (object)DBNull.Value)
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC spInsertarProducto @Nombre, @Precio, @Stock, @Categoria, @Descripcion, @Imagen",
+                    parameters
+                );
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(producto);
         }
 
-        //EDIT
+
+        // EDIT - mostrar formulario
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var producto = await _context.Productos.FindAsync(id);
+
+            var parameter = new SqlParameter("@Id", id);
+
+            var producto = await _context.Productos
+                .FromSqlRaw("EXEC spBuscarProducto @Id", parameter)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (producto == null)
             {
                 return NotFound();
             }
+
             return View(producto);
         }
 
-        //EDIT - guardar
+
+        // EDIT - guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Precio,Categoria,Descripcion,Imagen")] Producto producto)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Nombre,Precio,Stock,Categoria,Descripcion,Imagen")] Producto producto)
         {
             if (id != producto.Id)
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
+                var parameters = new[]
+                {
+                    new SqlParameter("@Id",
+                        producto.Id),
 
-                _context.Update(producto);
-                await _context.SaveChangesAsync();
+                    new SqlParameter("@Nombre",
+                        producto.Nombre ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Precio",
+                        producto.Precio),
+
+                    new SqlParameter("@Stock",
+                        producto.Stock),
+
+                    new SqlParameter("@Categoria",
+                        producto.Categoria ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Descripcion",
+                        producto.Descripcion ?? (object)DBNull.Value),
+
+                    new SqlParameter("@Imagen",
+                        producto.Imagen ?? (object)DBNull.Value)
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC spActualizarProducto @Id, @Nombre, @Precio, @Stock, @Categoria, @Descripcion, @Imagen",
+                    parameters
+                );
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(producto);
         }
 
-        //DELETE
+
+        // DELETE - mostrar confirmación
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var producto = await _context.Productos.FindAsync(id);
+
+            var parameter = new SqlParameter("@Id", id);
+
+            var producto = await _context.Productos
+                .FromSqlRaw("EXEC spBuscarProducto @Id", parameter)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (producto == null)
             {
                 return NotFound();
             }
+
             return View(producto);
         }
 
-        //DELETE - confirmar
+
+        // DELETE - confirmar eliminación
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var producto = await _context.Productos.FindAsync(id);
-            _context.Productos.Remove(producto);
-            await _context.SaveChangesAsync();
+            var parameter = new SqlParameter("@Id", id);
+
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC spEliminarProducto @Id",
+                parameter
+            );
+
             return RedirectToAction(nameof(Index));
         }
     }
