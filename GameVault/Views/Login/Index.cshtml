@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<style>
+
+    body {
+        background: #0b1020;
+    }
+
+    .login-container {
+        min-height: 85vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-card {
+        width: 400px;
+        padding: 35px;
+        background: #151b2e;
+        border-radius: 15px;
+        box-shadow: 0 0 25px #007bff55;
+    }
+
+    .titulo {
+        text-align: center;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .subtitulo {
+        text-align: center;
+        color: #aaa;
+        margin-bottom: 30px;
+    }
+
+    .campo {
+        margin-bottom: 20px;
+    }
+
+    .campo label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    .input {
+        display: flex;
+        align-items: center;
+        background: #0d1324;
+        border: 1px solid #39445f;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .icono {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .input input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+    }
+
+    .boton {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .boton:hover {
+        background: #0056b3;
+    }
+
+    .mensaje {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #dc3545;
+        color: white;
+        border-radius: 5px;
+    }
+
+</style>
+
+<div class="login-container">
+
+  
+    <div class="login-card">
+
+        <h2 class="titulo">🎮 GAMEVAULT</h2>
+
+        <p class="subtitulo">
+            
+        </p>
+
+
+        @if (ViewBag.Mensaje != null)
+        {
+            <div class="mensaje">
+                @ViewBag.Mensaje
+            </div>
+        }
+
+
+        <form asp-controller="Login" asp-action="Index" method="post">
+
+            <!-- Usuario -->
+            <div class="campo">
+
+                <label>Usuario</label>
+
+                <div class="input">
+
+                    <span class="icono">👤</span>
+
+                    <input type="email"
+                           name="correo"
+                           placeholder="Ingrese su correo"
+                           required />
+
+                </div>
+
+            </div>
+
+
+            <!-- Contraseña -->
+            <div class="campo">
+
+                <label>Contraseña</label>
+
+                <div class="input">
+
+                    <span class="icono">🔒</span>
+
+                    <input type="password"
+                           name="password"
+                           placeholder="Ingrese su contraseña"
+                           required />
+
+                </div>
+
+            </div>
+
+
+            <!-- Botón -->
+            <button type="submit" class="boton">
+                Iniciar Sesión
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

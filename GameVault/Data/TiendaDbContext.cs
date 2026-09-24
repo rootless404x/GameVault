@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-
 using GameVault.Models;
 
 namespace GameVault.Data
@@ -13,5 +11,6 @@ namespace GameVault.Data
 
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Contacto> Contactos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
