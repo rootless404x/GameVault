@@ -1,6 +1,8 @@
 ﻿using GameVault.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace GameVault.Controllers
 {
@@ -8,18 +10,16 @@ namespace GameVault.Controllers
     {
         private readonly TiendaDbContext _context;
 
-    public LoginController(TiendaDbContext context)
+        public LoginController(TiendaDbContext context)
         {
             _context = context;
         }
 
-        // Mostrar formulario de login
         public IActionResult Index()
         {
             return View();
         }
 
-        // Comprobar usuario
         [HttpPost]
         public async Task<IActionResult> Index(string correo, string password)
         {
@@ -28,12 +28,29 @@ namespace GameVault.Controllers
 
             if (usuario != null)
             {
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.SetString("UsuarioCorreo", usuario.Correo);
+                HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre);
+
+                HttpContext.Session.SetString("EsAdmin", usuario.EsAdmin.ToString());
+
+                if (usuario.EsAdmin)
+                {
+                    return RedirectToAction("Index", "Productos");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
             ViewBag.Mensaje = "Correo o contraseña incorrectos.";
             return View();
         }
-    }
 
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+    }
 }

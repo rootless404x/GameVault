@@ -35,6 +35,11 @@ body {
         border-color: #b83df2;
     }
 
+.btn-success {
+    background-color: #8b2be2;
+    border-color: #8b2be2;
+}
+
 .card {
     background-color: #18151f;
     color: #ffffff;
@@ -69,3 +74,4 @@ footer {
     background-color: #09090d;
     color: #ffffff;
 }
+

@@ -24,7 +24,5 @@ namespace GameVault.Models
         [StringLength(1000, ErrorMessage = "La descripción no puede superar los 1000 caracteres.")]
         public string Descripcion { get; set; }
 
-        [Url(ErrorMessage = "La imagen debe ser una URL válida (ej. https://sitio.com/imagen.jpg).")]
-        public string Imagen { get; set; }
     }
 }

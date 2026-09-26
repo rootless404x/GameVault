@@ -1,4 +1,76 @@
-﻿@page
-@model GameVault.Views.Productos.DeleteModel
+﻿@model GameVault.Models.Producto
+
 @{
+    Layout = null;
 }
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GameVault - Eliminar Producto</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-danger text-white">
+                <h3>Eliminar Producto 🎮</h3>
+            </div>
+
+            <div class="card-body">
+
+                <h5 class="mb-4">
+                    ¿Está seguro de que desea eliminar este producto?
+                </h5>
+
+                <p>
+                    <strong>Nombre:</strong> @Model.Nombre
+                </p>
+
+                <p>
+                    <strong>Precio:</strong> S/ @Model.Precio
+                </p>
+
+                <p>
+                    <strong>Stock:</strong> @Model.Stock
+                </p>
+
+                <p>
+                    <strong>Categoría:</strong> @Model.Categoria
+                </p>
+
+                <p>
+                    <strong>Descripción:</strong> @Model.Descripcion
+                </p>
+
+                <form asp-action="Delete" method="post">
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <button type="submit" class="btn btn-danger">
+                        Sí, eliminar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

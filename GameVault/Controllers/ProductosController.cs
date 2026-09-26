@@ -1,6 +1,7 @@
 ﻿using GameVault.Data;
 using GameVault.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,23 @@ namespace GameVault.Controllers
         {
             _context = context;
             _logger = logger;
+        }
+
+        //Verficiacion de admin
+        private bool VerificarAdmin()
+        {
+            string esAdmin = HttpContext.Session.GetString("EsAdmin");
+            return esAdmin == "True";
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (!VerificarAdmin())
+            {
+                context.Result = RedirectToAction("Index", "Login");
+            }
+
+            base.OnActionExecuting(context);
         }
 
         // READ - listar productos
@@ -43,56 +61,49 @@ namespace GameVault.Controllers
             return View();
         }
 
+
         // CREATE - guardar producto
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Id,Nombre,Precio,Stock,Categoria,Descripcion,Imagen")] Producto producto)
+    [Bind("Nombre,Precio,Stock,Categoria,Descripcion")] Producto producto)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _logger.LogInformation("Guardando producto: {Nombre}", producto.Nombre);
-
                     var parameters = new[]
                     {
-                        new SqlParameter("@Nombre", producto.Nombre ?? (object)DBNull.Value),
-                        new SqlParameter("@Precio", producto.Precio),
-                        new SqlParameter("@Stock", producto.Stock),
-                        new SqlParameter("@Categoria", producto.Categoria ?? (object)DBNull.Value),
-                        new SqlParameter("@Descripcion", producto.Descripcion ?? (object)DBNull.Value),
-                        new SqlParameter("@Imagen", producto.Imagen ?? (object)DBNull.Value)
-                    };
+                new SqlParameter("@Nombre", producto.Nombre ?? (object)DBNull.Value),
+                new SqlParameter("@Precio", producto.Precio),
+                new SqlParameter("@Stock", producto.Stock),
+                new SqlParameter("@Categoria", producto.Categoria ?? (object)DBNull.Value),
+                new SqlParameter("@Descripcion", producto.Descripcion ?? (object)DBNull.Value)
+            };
 
                     await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC spInsertarProducto @Nombre, @Precio, @Stock, @Categoria, @Descripcion, @Imagen",
+                        "EXEC spInsertarProducto @Nombre, @Precio, @Stock, @Categoria, @Descripcion",
                         parameters
                     );
 
-                    _logger.LogInformation("Producto {Nombre} guardado exitosamente.", producto.Nombre);
                     return RedirectToAction(nameof(Index));
-                }
-                catch (SqlException sqlEx)
-                {
-                    _logger.LogError(sqlEx, "Error de SQL al insertar el producto {Nombre}.", producto.Nombre);
-                    ModelState.AddModelError(string.Empty, "Error de base de datos al guardar el producto.");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error inesperado al guardar el producto {Nombre}.", producto.Nombre);
-                    ModelState.AddModelError(string.Empty, "Ocurrió un error inesperado al procesar la solicitud.");
+                    _logger.LogError(ex, "Error al insertar el producto.");
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Error al intentar registrar el producto."
+                    );
                 }
-            }
-            else
-            {
-                _logger.LogWarning("Intento de registro con datos de formulario inválidos.");
             }
 
             return View(producto);
         }
 
-        // EDIT - mostrar formulario
+
+        //EDIT - mostrar formulario
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -102,16 +113,21 @@ namespace GameVault.Controllers
 
             try
             {
-                var parameter = new SqlParameter("@Id", id);
+                var parameter = new SqlParameter("@Id", id.Value);
 
-                var producto = await _context.Productos
+                var producto = _context.Productos
                     .FromSqlRaw("EXEC spBuscarProducto @Id", parameter)
                     .AsNoTracking()
-                    .FirstOrDefaultAsync();
+                    .AsEnumerable()
+                    .FirstOrDefault();
 
                 if (producto == null)
                 {
-                    _logger.LogWarning("Producto con ID {Id} no fue encontrado para edición.", id);
+                    _logger.LogWarning(
+                        "Producto con ID {Id} no fue encontrado para edición.",
+                        id
+                    );
+
                     return NotFound();
                 }
 
@@ -119,8 +135,13 @@ namespace GameVault.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al buscar el producto con ID {Id}.", id);
-                return RedirectToAction(nameof(Index));
+                _logger.LogError(
+                    ex,
+                    "Error al buscar el producto con ID {Id}.",
+                    id
+                );
+
+                throw;
             }
         }
 
@@ -129,7 +150,7 @@ namespace GameVault.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            [Bind("Id,Nombre,Precio,Stock,Categoria,Descripcion,Imagen")] Producto producto)
+            [Bind("Id,Nombre,Precio,Stock,Categoria,Descripcion")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -150,11 +171,10 @@ namespace GameVault.Controllers
                         new SqlParameter("@Stock", producto.Stock),
                         new SqlParameter("@Categoria", producto.Categoria ?? (object)DBNull.Value),
                         new SqlParameter("@Descripcion", producto.Descripcion ?? (object)DBNull.Value),
-                        new SqlParameter("@Imagen", producto.Imagen ?? (object)DBNull.Value)
                     };
 
                     await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC spActualizarProducto @Id, @Nombre, @Precio, @Stock, @Categoria, @Descripcion, @Imagen",
+                        "EXEC spActualizarProducto @Id, @Nombre, @Precio, @Stock, @Categoria, @Descripcion",
                         parameters
                     );
 
@@ -172,7 +192,8 @@ namespace GameVault.Controllers
         }
 
         // DELETE - mostrar confirmación
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -181,15 +202,21 @@ namespace GameVault.Controllers
 
             try
             {
-                var parameter = new SqlParameter("@Id", id);
+                var parameter = new SqlParameter("@Id", id.Value);
 
-                var producto = await _context.Productos
+                var producto = _context.Productos
                     .FromSqlRaw("EXEC spBuscarProducto @Id", parameter)
                     .AsNoTracking()
-                    .FirstOrDefaultAsync();
+                    .AsEnumerable()
+                    .FirstOrDefault();
 
                 if (producto == null)
                 {
+                    _logger.LogWarning(
+                        "Producto con ID {Id} no fue encontrado para eliminación.",
+                        id
+                    );
+
                     return NotFound();
                 }
 
@@ -197,8 +224,13 @@ namespace GameVault.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al buscar producto ID {Id} para eliminación.", id);
-                return RedirectToAction(nameof(Index));
+                _logger.LogError(
+                    ex,
+                    "Error al buscar producto ID {Id} para eliminación.",
+                    id
+                );
+
+                throw;
             }
         }
 
@@ -209,7 +241,10 @@ namespace GameVault.Controllers
         {
             try
             {
-                _logger.LogInformation("Eliminando producto con ID {Id}", id);
+                _logger.LogInformation(
+                    "Eliminando producto con ID {Id}",
+                    id
+                );
 
                 var parameter = new SqlParameter("@Id", id);
 
@@ -218,12 +253,26 @@ namespace GameVault.Controllers
                     parameter
                 );
 
-                _logger.LogInformation("Producto ID {Id} eliminado con éxito.", id);
+                _logger.LogInformation(
+                    "Producto ID {Id} eliminado con éxito.",
+                    id
+                );
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al eliminar el producto ID {Id}.", id);
+                _logger.LogError(
+                    ex,
+                    "Error al eliminar el producto ID {Id}.",
+                    id
+                );
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Error al eliminar el producto."
+                );
+
                 return RedirectToAction(nameof(Index));
             }
         }

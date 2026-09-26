@@ -16,6 +16,8 @@ namespace GameVault.Models
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         public string Password { get; set; }
+
+        public bool EsAdmin { get; set; } = false;
     }
 
 
