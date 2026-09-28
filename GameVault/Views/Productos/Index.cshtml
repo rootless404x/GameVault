@@ -33,15 +33,15 @@
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#inicio">Inicio</a>
+                        <a asp-controller="Home" asp-action="Index" class="nav-link">Inicio</a>
+                    </li>
+
+                   <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" asp-fragment="productos" class="nav-link">Productos</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#productos">Productos</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contacto">Contacto</a>
+                        <a asp-controller="Home" asp-action="Index" asp-fragment="contacto" class="nav-link">Contacto</a>
                     </li>
 
                     <li class="nav-item">

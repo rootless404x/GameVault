@@ -1,4 +1,8 @@
-﻿@{
+﻿@model IEnumerable<GameVault.Models.Producto>
+@{
+    ViewData["Title"] = "Productos";
+}
+@{
     Layout = null;
 }
 
@@ -20,7 +24,7 @@
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="#inicio">
-                <img src="img/icono.png" alt="Logo de Game Vault" />
+                <img src="~/img/icono.png" alt="Logo de Game Vault" />
                 GameVault
             </a>
 
@@ -45,9 +49,22 @@
                         <a class="nav-link" href="#contacto">Contacto</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a asp-controller="Login" asp-action="Index" class="btn btn-primary">Login</a>
-                    </li>
+                    @if (Context.Session.GetString("EsAdmin") == "True")
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="Productos" asp-action="Index" class="btn btn-primary">
+                                Administrar productos
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="Login" asp-action="Index" class="btn btn-primary">
+                                Login
+                            </a>
+                        </li>
+                    }
 
                 </ul>
 
@@ -87,59 +104,43 @@
 
     <section id="productos" class="py-5">
 
-        <div class="container">
+        <div class="container mt-4">
+            <div class="row">
 
-            <div class="text-center mb-5">
-
-                <h2 class="fw-bold">
-                    Nuestros productos
-                </h2>
-
-                <p class="text-secundario">
-                    Todo lo que necesitas para mejorar tu setup gamer.
-                </p>
-
-            </div>
-
-
-            <div class="row g-4">
-
-                @if (Model != null)
+                @foreach (var producto in Model)
                 {
-                    @foreach (var producto in Model)
-                    {
-                        <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
 
-                            <div class="card h-100 shadow-sm">
+                            <div class="card-body">
 
-                                <img src="@producto.Imagen"
-                                     class="card-img-top"
-                                     alt="@producto.Nombre" />
+                                <h5 class="card-title">
+                                    @producto.Nombre
+                                </h5>
 
-                                <div class="card-body text-center">
+                                <p class="card-text">
+                                    @producto.Descripcion
+                                </p>
 
-                                    <h5 class="card-title">
-                                        @producto.Nombre
-                                    </h5>
+                                <p>
+                                    <strong>Categoría:</strong> @producto.Categoria
+                                </p>
 
-                                    <p class="card-text">
-                                        @producto.Descripcion
-                                    </p>
+                                <p>
+                                    <strong>Precio:</strong> S/ @producto.Precio
+                                </p>
 
-                                    <p class="fw-bold">
-                                        S/ @producto.Precio
-                                    </p>
-
-                                </div>
+                                <p>
+                                    <strong>Stock:</strong> @producto.Stock
+                                </p>
 
                             </div>
 
                         </div>
-                    }
+                    </div>
                 }
 
             </div>
-
         </div>
 
     </section>

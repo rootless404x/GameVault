@@ -49,7 +49,6 @@ namespace GameVault.Controllers
             }
             catch (Exception ex)
             {
-                // Registra el error en el archivo .txt
                 _logger.LogError(ex, "Error al listar los productos desde la base de datos.");
                 return View(new List<Producto>());
             }
