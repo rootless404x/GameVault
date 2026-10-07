@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GameVault.Models.Producto>
+﻿@model GameVault.ViewModels.HomeViewModel
 
 @{
     ViewData["Title"] = "GameVault";
@@ -50,7 +50,7 @@
 
         <div class="row">
 
-            @foreach (var producto in Model)
+            @foreach (var producto in Model.Productos)
             {
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
 
@@ -117,63 +117,66 @@
 
                 </div>
 
-
-                <form>
+                <form asp-controller="Home"
+                      asp-action="Contacto"
+                      method="post"
+                      novalidate
+                      aria-label="Formulario de contacto">
 
                     <div class="mb-3">
 
-                        <label for="nombre"
+                        <label asp-for="Contacto.Nombre"
                                class="form-label">
                             Nombre
                         </label>
 
-                        <input type="text"
+                        <input asp-for="Contacto.Nombre"
                                class="form-control"
-                               id="nombre"
-                               name="nombre"
                                placeholder="Ingrese su nombre"
-                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+"
-                               required
-                               aria-required="true">
+                               aria-required="true" />
+
+                        <span asp-validation-for="Contacto.Nombre"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
-
                     <div class="mb-3">
 
-                        <label for="correo"
+                        <label asp-for="Contacto.Email"
                                class="form-label">
                             Correo electrónico
                         </label>
 
-                        <input type="email"
+                        <input asp-for="Contacto.Email"
                                class="form-control"
-                               id="correo"
-                               name="correo"
                                placeholder="ejemplo@correo.com"
-                               required
-                               aria-required="true">
+                               aria-required="true" />
+
+                        <span asp-validation-for="Contacto.Email"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
-
                     <div class="mb-3">
 
-                        <label for="mensaje"
+                        <label asp-for="Contacto.Mensaje"
                                class="form-label">
                             Mensaje
                         </label>
 
-                        <textarea class="form-control"
-                                  id="mensaje"
-                                  name="mensaje"
+                        <textarea asp-for="Contacto.Mensaje"
+                                  class="form-control"
                                   rows="5"
                                   placeholder="Escriba su mensaje"
-                                  required
                                   aria-required="true"></textarea>
 
-                    </div>
+                        <span asp-validation-for="Contacto.Mensaje"
+                              class="text-danger">
+                        </span>
 
+                    </div>
 
                     <div class="text-center">
 
@@ -193,3 +196,17 @@
     </div>
 
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            if (document.querySelector(".field-validation-error")) {
+                document.getElementById("contacto").scrollIntoView();
+            }
+
+        });
+    </script>
+}
