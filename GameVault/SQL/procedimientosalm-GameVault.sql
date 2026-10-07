@@ -75,3 +75,67 @@ BEGIN
     WHERE Id = @Id
 END
 GO
+
+
+
+CREATE PROCEDURE spRegistrarContacto
+    @Nombre NVARCHAR(100),
+    @Email NVARCHAR(255),
+    @Mensaje NVARCHAR(500)
+AS
+BEGIN
+    INSERT INTO Contactos (Nombre, Email, Mensaje, Fecha)
+    VALUES (@Nombre, @Email, @Mensaje, GETDATE());
+END
+
+ALTER PROCEDURE spRegistrarContacto
+    @Nombre NVARCHAR(100),
+    @Email NVARCHAR(255),
+    @Mensaje NVARCHAR(500)
+AS
+BEGIN
+
+    INSERT INTO Contactos
+        (Nombre, Email, Mensaje, Fecha, Leido)
+    VALUES
+        (@Nombre, @Email, @Mensaje, GETDATE(), 0);
+
+END;
+
+
+CREATE PROCEDURE spMarcarContactoLeido
+    @Id INT
+AS
+BEGIN
+
+    UPDATE Contactos
+    SET Leido = 1
+    WHERE Id = @Id;
+
+END;
+
+CREATE PROCEDURE spListarContactos
+AS
+BEGIN
+
+    SELECT
+        Id,
+        Nombre,
+        Email,
+        Mensaje,
+        Fecha,
+        Leido
+    FROM Contactos
+    ORDER BY Fecha DESC;
+
+END;
+
+CREATE PROCEDURE spEliminarContacto
+    @Id INT
+AS
+BEGIN
+
+    DELETE FROM Contactos
+    WHERE Id = @Id;
+
+END;
