@@ -17,6 +17,9 @@ namespace GameVault.Models
         [Required(ErrorMessage = "El mensaje no puede estar vacío.")]
         [StringLength(500, MinimumLength = 10, ErrorMessage = "El mensaje debe tener entre 10 y 500 caracteres.")]
         public string Mensaje { get; set; }
+
         public DateTime Fecha { get; set; }
+
+        public bool Leido { get; set; }
     }
 }
