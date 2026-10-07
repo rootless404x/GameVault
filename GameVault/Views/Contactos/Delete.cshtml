@@ -1,0 +1,66 @@
+﻿@model GameVault.Models.Contacto
+
+@{
+    ViewData["Title"] = "Eliminar mensaje";
+}
+
+<div class="container mt-5 mb-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-danger text-white">
+
+            <h3 class="mb-0">
+                Eliminar mensaje
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-warning">
+
+                <strong>Advertencia:</strong>
+
+                ¿Está seguro de que desea eliminar este mensaje?
+
+            </div>
+
+            <p>
+                <strong>Nombre:</strong>
+                @Model.Nombre
+            </p>
+
+            <p>
+                <strong>Correo:</strong>
+                @Model.Email
+            </p>
+
+            <p>
+                <strong>Mensaje:</strong>
+                @Model.Mensaje
+            </p>
+
+            <form asp-action="DeleteConfirmed"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Sí, eliminar
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
