@@ -1,0 +1,94 @@
+﻿<nav class="navbar navbar-expand-lg navbar-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="#inicio" aria-label="Ir al inicio de GameVault">
+            <img src="~/img/icono.png"
+                 alt="Logo de GameVault"
+                 width="40"
+                 height="40" />
+            GameVault
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menuNavegacion"
+                aria-controls="menuNavegacion"
+                aria-expanded="false"
+                aria-label="Mostrar menú de navegación">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavegacion">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Home"
+                       asp-action="Index"
+                       asp-fragment="inicio">
+                        Inicio
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Home"
+                       asp-action="Index"
+                       asp-fragment="productos">
+                        Productos
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Home"
+                       asp-action="Index"
+                       asp-fragment="contacto">
+                        Contacto
+                    </a>
+                </li>
+
+                @if (ViewContext.HttpContext.Session.GetString("EsAdmin") == "True")
+                    {
+                        var controladorActual = ViewContext.RouteData.Values["controller"]?.ToString();
+
+                    @if (controladorActual == "Productos")
+                    {
+                        <li class="nav-item ms-lg-2">
+                            <a asp-controller="Login"
+                               asp-action="Logout"
+                               class="btn btn-outline-danger">
+                                Logout
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ms-lg-2">
+                            <a asp-controller="Productos"
+                               asp-action="Index"
+                               class="btn btn-primary">
+                                Administrar productos
+                            </a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="nav-item ms-lg-2">
+                        <a asp-controller="Login"
+                           asp-action="Index"
+                           class="btn btn-primary">
+                            Login
+                        </a>
+                    </li>
+                }
+
+            </ul>
+
+        </div>
+    </div>
+</nav>

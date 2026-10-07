@@ -1,179 +1,118 @@
 @model GameVault.Models.Producto
 
-@{
-    Layout = null;
-}
+<div class="container mt-4 mb-5">
 
-<!DOCTYPE html>
-<html lang="es">
+    <div class="card shadow">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameVault - Editar Producto</title>
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-
-            <a class="navbar-brand fw-bold" href="/Productos">
-                <img src="~/img/icono.png"
-                     alt="Logo de Game Vault"
-                     style="width: 40px; height: 40px; object-fit: contain; margin-right: 8px;" />
-                GameVault
-            </a>
-
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Productos" asp-action="Index">
-                            Productos
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn btn-outline-danger btn-sm"
-                           asp-controller="Login"
-                           asp-action="Logout">
-                            Logout
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-
+        <div class="card-header bg-warning">
+            <h3 class="mb-0">Editar Producto 🎮</h3>
         </div>
-    </nav>
 
+        <div class="card-body">
 
-    <div class="container mt-4">
+            <form asp-action="Edit" method="post" novalidate>
 
-        <div class="card shadow">
+                <input type="hidden" asp-for="Id" />
 
-            <div class="card-header bg-warning">
-                <h3>Editar Producto 🎮</h3>
-            </div>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger">
+                </div>
 
-            <div class="card-body">
+                <div class="mb-3">
 
-                <form asp-action="Edit" method="post">
+                    <label asp-for="Nombre"
+                           class="form-label">
+                        Nombre del producto
+                    </label>
 
-                    <input type="hidden" asp-for="Id" />
+                    <input asp-for="Nombre"
+                           class="form-control" />
 
-                    <div asp-validation-summary="ModelOnly"
-                         class="text-danger">
-                    </div>
+                    <span asp-validation-for="Nombre"
+                          class="text-danger">
+                    </span>
 
+                </div>
 
-                    <div class="mb-3">
+                <div class="mb-3">
 
-                        <label asp-for="Nombre"
-                               class="form-label">
-                            Nombre del producto
-                        </label>
+                    <label asp-for="Precio"
+                           class="form-label">
+                        Precio
+                    </label>
 
-                        <input asp-for="Nombre"
-                               class="form-control" />
+                    <input asp-for="Precio"
+                           class="form-control" />
 
-                        <span asp-validation-for="Nombre"
-                              class="text-danger">
-                        </span>
+                    <span asp-validation-for="Precio"
+                          class="text-danger">
+                    </span>
 
-                    </div>
+                </div>
 
+                <div class="mb-3">
 
-                    <div class="mb-3">
+                    <label asp-for="Stock"
+                           class="form-label">
+                        Stock
+                    </label>
 
-                        <label asp-for="Precio"
-                               class="form-label">
-                            Precio
-                        </label>
+                    <input asp-for="Stock"
+                           class="form-control" />
 
-                        <input asp-for="Precio"
-                               class="form-control" />
+                    <span asp-validation-for="Stock"
+                          class="text-danger">
+                    </span>
 
-                        <span asp-validation-for="Precio"
-                              class="text-danger">
-                        </span>
+                </div>
 
-                    </div>
+                <div class="mb-3">
 
+                    <label asp-for="Categoria"
+                           class="form-label">
+                        Categoría
+                    </label>
 
-                    <div class="mb-3">
+                    <input asp-for="Categoria"
+                           class="form-control" />
 
-                        <label asp-for="Stock"
-                               class="form-label">
-                            Stock
-                        </label>
+                    <span asp-validation-for="Categoria"
+                          class="text-danger">
+                    </span>
 
-                        <input asp-for="Stock"
-                               class="form-control" />
+                </div>
 
-                        <span asp-validation-for="Stock"
-                              class="text-danger">
-                        </span>
+                <div class="mb-3">
 
-                    </div>
+                    <label asp-for="Descripcion"
+                           class="form-label">
+                        Descripción
+                    </label>
 
+                    <textarea asp-for="Descripcion"
+                              class="form-control"
+                              rows="4"></textarea>
 
-                    <div class="mb-3">
+                    <span asp-validation-for="Descripcion"
+                          class="text-danger">
+                    </span>
 
-                        <label asp-for="Categoria"
-                               class="form-label">
-                            Categoría
-                        </label>
+                </div>
 
-                        <input asp-for="Categoria"
-                               class="form-control" />
+                <button type="submit"
+                        class="btn btn-warning">
+                    Actualizar Producto
+                </button>
 
-                        <span asp-validation-for="Categoria"
-                              class="text-danger">
-                        </span>
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
 
-                    </div>
-
-
-                    <div class="mb-3">
-
-                        <label asp-for="Descripcion"
-                               class="form-label">
-                            Descripción
-                        </label>
-
-                        <textarea asp-for="Descripcion"
-                                  class="form-control">
-                        </textarea>
-
-                        <span asp-validation-for="Descripcion"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <button type="submit"
-                            class="btn btn-warning">
-                        Actualizar Producto
-                    </button>
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
-                        Cancelar
-                    </a>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
     </div>
 
-</body>
-</html>
+</div>

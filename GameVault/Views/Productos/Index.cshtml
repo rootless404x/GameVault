@@ -2,83 +2,36 @@
 
 @{
     ViewData["Title"] = "Productos";
-    Layout = null;
 }
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameVault</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
+<div class="container mt-4 mb-5">
 
-            <a class="navbar-brand fw-bold" href="#inicio">
-                <img src="~/img/icono.png" alt="Logo de Game Vault" style="width: 40px; height: 40px; object-fit: contain; margin-right: 8px;" />
-                GameVault
-            </a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion"
-                    aria-controls="menuNavegacion" aria-expanded="false" aria-label="Mostrar menú">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <h1 class="fw-bold">
+            🎮 Catálogo GameVault
+        </h1>
 
-            <div class="collapse navbar-collapse" id="menuNavegacion">
+        <a asp-action="Create" class="btn btn-primary">
+            + Nuevo Producto
+        </a>
 
-                <ul class="navbar-nav ms-auto">
+    </div>
 
-                    <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" class="nav-link">Inicio</a>
-                    </li>
+    <div class="card shadow">
 
-                   <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" asp-fragment="productos" class="nav-link">Productos</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" asp-fragment="contacto" class="nav-link">Contacto</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn btn-outline-danger btn-sm" asp-controller="Login" asp-action="Logout">Logout</a>
-                    </li>
-
-                </ul>
-
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold">
-                🎮 Catálogo GameVault
-            </h1>
-
-            <a asp-action="Create" class="btn btn-primary">
-                + Nuevo Producto
-            </a>
+        <div class="card-header text-white" style="background-color: #8b2be2;">
+            Lista de Productos
         </div>
 
+        <div class="card-body">
 
-        <div class="card shadow">
-
-            <div class="card-header text-white" style="background-color: #8b2be2;">
-                Lista de Productos
-            </div>
-
-
-            <div class="card-body">
+            <div class="table-responsive">
 
                 <table class="table table-hover table-bordered align-middle">
 
                     <thead class="table-dark">
+
                         <tr>
                             <th>Nombre</th>
                             <th>Precio</th>
@@ -87,53 +40,53 @@
                             <th>Descripción</th>
                             <th>Acciones</th>
                         </tr>
-                    </thead>
 
+                    </thead>
 
                     <tbody>
 
-                    @foreach (var producto in Model)
-                    {
-                        <tr>
+                        @foreach (var producto in Model)
+                        {
+                            <tr>
 
-                            <td>@producto.Nombre</td>
+                                <td>
+                                    @producto.Nombre
+                                </td>
 
-                            <td>
-                                S/ @producto.Precio
-                            </td>
+                                <td>
+                                    S/ @producto.Precio
+                                </td>
 
-                            <td>
-                                @producto.Stock
-                            </td>
+                                <td>
+                                    @producto.Stock
+                                </td>
 
-                            <td>
-                                @producto.Categoria
-                            </td>
+                                <td>
+                                    @producto.Categoria
+                                </td>
 
-                            <td>
-                                @producto.Descripcion
-                            </td>
+                                <td>
+                                    @producto.Descripcion
+                                </td>
 
+                                <td>
 
-                            <td>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@producto.Id"
+                                       class="btn btn-warning btn-sm">
+                                        Editar
+                                    </a>
 
-                                <a asp-action="Edit"
-                                   asp-route-id="@producto.Id"
-                                   class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
+                                    <a asp-action="Delete"
+                                       asp-route-id="@producto.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Eliminar
+                                    </a>
 
+                                </td>
 
-                                <a asp-action="Delete"
-                                   asp-route-id="@producto.Id"
-                                   class="btn btn-danger btn-sm">
-                                    Eliminar
-                                </a>
-
-                            </td>
-
-                        </tr>
-                    }
+                            </tr>
+                        }
 
                     </tbody>
 
@@ -142,6 +95,7 @@
             </div>
 
         </div>
+
     </div>
-</body>
-</html>
+
+</div>
