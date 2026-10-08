@@ -12,9 +12,14 @@
             🎮 Catálogo GameVault
         </h1>
 
+        <div class="d-flex gap-2">
         <a asp-action="Create" class="btn btn-primary">
             + Nuevo Producto
         </a>
+        <a asp-controller="Reportes" asp-action="Productos" target="_blank" class="btn btn-danger">
+        <i class="bi bi-file-pdf"></i> Ver Reporte PDF
+        </a>
+        </div>
 
     </div>
 
