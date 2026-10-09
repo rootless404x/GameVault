@@ -54,7 +54,15 @@
                     </a>
                 </li>
 
-                @if (ViewContext.HttpContext.Session.GetString("EsAdmin") == "True")
+                
+               
+                @{
+                    var esAdmin = Context.Session.GetString("EsAdmin") == "True";
+                    var usuarioCorreo = Context.Session.GetString("UsuarioCorreo");
+                    var sesionIniciada = !string.IsNullOrEmpty(usuarioCorreo);
+                }
+
+                @if (esAdmin)
                 {
                     <li class="nav-item ms-lg-2">
                         <a asp-controller="Productos"
@@ -71,7 +79,10 @@
                             Mensajes
                         </a>
                     </li>
+                }
 
+                @if (sesionIniciada)
+                {
                     <li class="nav-item ms-lg-2">
                         <a asp-controller="Login"
                            asp-action="Logout"
@@ -90,6 +101,8 @@
                         </a>
                     </li>
                 }
+
+
 
             </ul>
 
