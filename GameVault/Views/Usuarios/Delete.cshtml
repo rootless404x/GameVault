@@ -1,0 +1,64 @@
+﻿@model GameVault.Models.Usuario
+
+@{
+    ViewData["Title"] = "Eliminar usuario";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card bg-dark text-light shadow">
+                <div class="card-body p-4">
+                    <h2 class="mb-3">Eliminar usuario</h2>
+
+                    <p class="text-secondary">
+                        ¿Estás seguro de que deseas eliminar
+                        este usuario? Esta acción no se puede deshacer.
+                    </p>
+
+                    <hr />
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Nombre</dt>
+                        <dd class="col-sm-8">@Model.Nombre</dd>
+
+                        <dt class="col-sm-4">Correo</dt>
+                        <dd class="col-sm-8">@Model.Correo</dd>
+
+                        <dt class="col-sm-4">Rol</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.EsAdmin)
+                            {
+                                <span class="badge bg-danger">
+                                    Administrador
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    Usuario
+                                </span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit"
+                                    class="btn btn-danger">
+                                Eliminar usuario
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-light">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
